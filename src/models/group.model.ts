@@ -1,7 +1,16 @@
-import mongoose from 'mongoose';
-import { EDietaryRestriction, EGroupRole, EGender, EActivityLevel } from '../interfaces/index.js';
+import mongoose, { Schema, Document } from 'mongoose';
+import { EDietaryRestriction, EGroupRole, EGender, EActivityLevel, IMemberProfile, IGroup } from '../interfaces/index.js';
 
-const memberProfileSchema = new mongoose.Schema({
+export interface MemberProfileDocument extends Document, Omit<IMemberProfile, 'id'> {
+    _id: mongoose.Types.ObjectId;
+}
+
+const memberProfileSchema = new Schema({
+    id: {
+        type: String,
+        required: true,
+        default: () => new mongoose.Types.ObjectId().toString()
+    },
     role: {
         type: String,
         enum: Object.values(EGroupRole),
@@ -61,11 +70,20 @@ const memberProfileSchema = new mongoose.Schema({
         }
     }
 }, {
-    _id: true,
-    timestamps: false
+    _id: false,
+    toJSON: {
+        transform: (_, ret) => {
+            delete ret.__v;
+            return ret;
+        }
+    }
 });
 
-const groupSchema = new mongoose.Schema({
+export interface GroupDocument extends Document, Omit<IGroup, '_id'> {
+    _id: mongoose.Types.ObjectId;
+}
+
+const groupSchema = new Schema({
     name: {
         type: String,
         required: true,
@@ -73,12 +91,18 @@ const groupSchema = new mongoose.Schema({
     },
     members: [memberProfileSchema]
 }, {
-    timestamps: true
+    timestamps: true,
+    toJSON: {
+        transform: (_, ret) => {
+            ret.id = ret._id.toString();
+            delete ret._id;
+            delete ret.__v;
+            return ret;
+        }
+    }
 });
 
-// Indices
 groupSchema.index({ name: 1 });
 memberProfileSchema.index({ firstName: 1, lastName: 1 });
 
-export const Group = mongoose.model('Group', groupSchema);
-export const MemberProfile = mongoose.model('MemberProfile', memberProfileSchema);
+export const Group = mongoose.model<GroupDocument>('Group', groupSchema);

@@ -1,7 +1,15 @@
 {
-    "name": "@family-serve/database",
+    "name": "@axyor/family-serve-database",
     "version": "1.0.0",
     "description": "Database layer for Family Serve Delicious application",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Axyor/family-serve-delicious.git",
+        "directory": "packages/database"
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com"
+    },
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "type": "module",

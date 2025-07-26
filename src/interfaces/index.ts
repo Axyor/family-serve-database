@@ -43,7 +43,7 @@ export interface IMemberProfile {
 }
 
 export interface IGroup {
-    readonly _id: string;
+    readonly _id?: string;
     name: string;
     members: IMemberProfile[];
     updatedAt: Date;
