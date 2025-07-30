@@ -77,10 +77,17 @@ async function example() {
                 likes: ['Quinoa', 'Salmon', 'Avocado'],
                 dislikes: ['Mushrooms', 'Cilantro']
             },
-            allergies: ['Shellfish', 'Tree nuts'],
             restrictions: [
-                EDietaryRestriction.GLUTEN_FREE,
-                EDietaryRestriction.DAIRY_FREE
+                {
+                    type: EDietaryRestrictionType.FORBIDDEN,
+                    reason: EDietaryRestriction.GLUTEN_FREE,
+                    notes: 'Celiac disease'
+                },
+                {
+                    type: EDietaryRestrictionType.REDUCED,
+                    reason: EDietaryRestriction.DAIRY_FREE,
+                    notes: 'Lactose intolerant'
+                }
             ],
             healthNotes: 'Needs high-protein meals'
         }
@@ -95,12 +102,25 @@ async function example() {
 ### Available Enums
 
 ```typescript
+// Dietary Restrictions Types
+enum EDietaryRestrictionType {
+    FORBIDDEN = 'FORBIDDEN',
+    REDUCED = 'REDUCED'
+}
+
 // Dietary Restrictions
 enum EDietaryRestriction {
     VEGETARIAN = 'VEGETARIAN',
     VEGAN = 'VEGAN',
     GLUTEN_FREE = 'GLUTEN_FREE',
     DAIRY_FREE = 'DAIRY_FREE'
+}
+
+// Dietary Restriction Interface
+interface IDietaryRestriction {
+    type: EDietaryRestrictionType;
+    reason: EDietaryRestriction | string;
+    notes?: string;
 }
 
 // Activity Levels

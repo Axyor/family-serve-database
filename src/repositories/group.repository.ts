@@ -1,6 +1,6 @@
 import { Group, GroupDocument } from '../models/group.model.js';
 import { BaseRepository } from './base.repository.js';
-import { IGroup, IMemberProfile } from '../interfaces/index.js';
+import { IGroup, IMemberProfile, IDietaryRestriction } from '../interfaces/index.js';
 
 export class GroupRepository extends BaseRepository<GroupDocument, IGroup> {
     constructor() {
@@ -9,17 +9,7 @@ export class GroupRepository extends BaseRepository<GroupDocument, IGroup> {
 
     protected toInterface(doc: GroupDocument | null): IGroup | null {
         if (!doc) return null;
-        const { _id, name, members, createdAt, updatedAt } = doc.toJSON();
-        return {
-            _id: _id.toString(),
-            name,
-            members: members.map((m: any) => ({
-                ...m,
-                _id: m._id.toString()
-            })) as IMemberProfile[],
-            createdAt,
-            updatedAt
-        };
+        return doc.toJSON();
     }
 
     async addMember(groupId: string, member: Omit<IMemberProfile, 'id'>): Promise<IGroup | null> {
@@ -35,17 +25,44 @@ export class GroupRepository extends BaseRepository<GroupDocument, IGroup> {
     }
 
     async updateMember(groupId: string, memberId: string, update: Partial<IMemberProfile>): Promise<IGroup | null> {
+        function processUpdate(
+            obj: Record<string, any>,
+            prefix: string = '',
+            depth: number = 0
+        ): Record<string, unknown> {
+            const fields: Record<string, unknown> = {};
+            const MAX_DEPTH = 3; // Basé sur la structure de IMemberProfile
+
+            if (depth >= MAX_DEPTH || !obj || typeof obj !== 'object') {
+                fields[prefix] = obj;
+                return fields;
+            }
+
+            for (const [key, value] of Object.entries(obj)) {
+                const fullPath = prefix ? `${prefix}.${key}` : key;
+                if (value && typeof value === 'object' && !Array.isArray(value)) {
+                    Object.assign(fields, processUpdate(value, fullPath, depth + 1));
+                } else {
+                    fields[fullPath] = value;
+                }
+            }
+
+            return fields;
+        }
+
+        // Transform the update object to use MongoDB's dot notation
+        const processedFields = processUpdate(update, 'members.$');
+
         const doc = await this.model.findOneAndUpdate(
             {
                 _id: groupId,
                 'members._id': memberId
             },
             {
-                $set: Object.entries(update).reduce((acc, [key, value]) => ({
-                    ...acc,
-                    [`members.$.${key}`]: value
-                }), {}),
-                updatedAt: new Date()
+                $set: {
+                    ...processedFields,
+                    updatedAt: new Date()
+                }
             },
             { new: true }
         );
@@ -57,6 +74,65 @@ export class GroupRepository extends BaseRepository<GroupDocument, IGroup> {
             groupId,
             {
                 $pull: { members: { _id: memberId } },
+                $set: { updatedAt: new Date() }
+            },
+            { new: true }
+        );
+        return this.toInterface(doc);
+    }
+
+    async updateMemberRestrictions(
+        groupId: string,
+        memberId: string,
+        restrictions: IDietaryRestriction[]
+    ): Promise<IGroup | null> {
+        const doc = await this.model.findOneAndUpdate(
+            {
+                _id: groupId,
+                'members._id': memberId
+            },
+            {
+                $set: {
+                    'members.$.dietaryProfile.restrictions': restrictions,
+                    updatedAt: new Date()
+                }
+            },
+            { new: true }
+        );
+        return this.toInterface(doc);
+    }
+
+    async addMemberRestriction(
+        groupId: string,
+        memberId: string,
+        restriction: IDietaryRestriction
+    ): Promise<IGroup | null> {
+        const doc = await this.model.findOneAndUpdate(
+            {
+                _id: groupId,
+                'members._id': memberId
+            },
+            {
+                $push: { 'members.$.dietaryProfile.restrictions': restriction },
+                $set: { updatedAt: new Date() }
+            },
+            { new: true }
+        );
+        return this.toInterface(doc);
+    }
+
+    async removeMemberRestriction(
+        groupId: string,
+        memberId: string,
+        restrictionId: string
+    ): Promise<IGroup | null> {
+        const doc = await this.model.findOneAndUpdate(
+            {
+                _id: groupId,
+                'members._id': memberId
+            },
+            {
+                $pull: { 'members.$.dietaryProfile.restrictions': { _id: restrictionId } },
                 $set: { updatedAt: new Date() }
             },
             { new: true }

@@ -1,4 +1,4 @@
-import mongoose, { Document, Model } from 'mongoose';
+import { Document, Model } from 'mongoose';
 
 export abstract class BaseRepository<TDocument extends Document, TInterface> {
     constructor(protected readonly model: Model<TDocument>) { }

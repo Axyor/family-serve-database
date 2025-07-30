@@ -1,15 +1,24 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { EDietaryRestriction, EGroupRole, EGender, EActivityLevel, IMemberProfile, IGroup } from '../interfaces/index.js';
+import {
+    EDietaryRestriction,
+    EDietaryRestrictionType,
+    EGroupRole,
+    EGender,
+    EActivityLevel,
+    EHealthGoal,
+    IMemberProfile,
+    IGroup
+} from '../interfaces/index.js';
 
 export interface MemberProfileDocument extends Document, Omit<IMemberProfile, 'id'> {
     _id: mongoose.Types.ObjectId;
 }
 
 const memberProfileSchema = new Schema({
-    id: {
-        type: String,
+    _id: {
+        type: Schema.Types.ObjectId,
         required: true,
-        default: () => new mongoose.Types.ObjectId().toString()
+        default: () => new mongoose.Types.ObjectId()
     },
     role: {
         type: String,
@@ -37,12 +46,21 @@ const memberProfileSchema = new Schema({
         enum: Object.values(EGender),
         required: true
     },
+    weightKg: {
+        type: Number,
+        min: 0
+    },
+    heightCm: {
+        type: Number,
+        min: 0
+    },
     activityLevel: {
         type: String,
         enum: Object.values(EActivityLevel)
     },
     healthGoals: [{
         type: String,
+        enum: Object.values(EHealthGoal),
         trim: true
     }],
     dietaryProfile: {
@@ -61,8 +79,25 @@ const memberProfileSchema = new Schema({
             trim: true
         }],
         restrictions: [{
-            type: String,
-            enum: Object.values(EDietaryRestriction)
+            type: {
+                type: String,
+                enum: Object.values(EDietaryRestrictionType),
+                required: true
+            },
+            reason: {
+                type: Schema.Types.Mixed,
+                required: true,
+                validate: {
+                    validator: function (v: any) {
+                        return typeof v === 'string' || Object.values(EDietaryRestriction).includes(v);
+                    },
+                    message: 'reason must be either a string or a valid EDietaryRestriction value'
+                }
+            },
+            notes: {
+                type: String,
+                trim: true
+            }
         }],
         healthNotes: {
             type: String,
@@ -70,9 +105,11 @@ const memberProfileSchema = new Schema({
         }
     }
 }, {
-    _id: false,
     toJSON: {
         transform: (_, ret) => {
+            if (ret._id) {
+                ret._id = ret._id.toString();
+            }
             delete ret.__v;
             return ret;
         }
@@ -94,8 +131,15 @@ const groupSchema = new Schema({
     timestamps: true,
     toJSON: {
         transform: (_, ret) => {
-            ret.id = ret._id.toString();
-            delete ret._id;
+            if (ret._id) {
+                ret._id = ret._id.toString();
+            }
+            if (ret.members) {
+                ret.members = ret.members.map((member: any) => ({
+                    ...member,
+                    _id: member._id.toString()
+                }));
+            }
             delete ret.__v;
             return ret;
         }
