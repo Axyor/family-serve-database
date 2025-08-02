@@ -150,6 +150,7 @@ The database uses Mongoose schemas to define the structure of the data.
 <details>
 <summary>View MemberProfile Schema</summary>
 
+<<<<<<< HEAD
 ```json
 {
     "role": "EGroupRole",
@@ -175,9 +176,76 @@ The database uses Mongoose schemas to define the structure of the data.
         "healthNotes": "String"
     }
 }
+=======
+### Installation
+
+```bash
+# Install dependencies
+npm install
+
+# Build the package
+npm run build
+>>>>>>> 8022fd4 (Implement tests and data for testing)
 ```
 </details>
 
+<<<<<<< HEAD
 ## 📜 License
 
 This project is licensed under the ISC License. See the [LICENSE](LICENSE) file for details.
+=======
+### Testing
+
+This project includes a comprehensive test suite to ensure code stability and reliability. Tests are run in an isolated environment using Docker, ensuring consistent and reproducible results without affecting your local development database.
+
+Prerequisites
+Docker must be installed and running on your machine.
+
+**Recommended Method (All-in-One)**  
+
+For a quick validation, this command handles the entire cycle: starts the container, runs the tests, and cleans up afterward.
+
+```bash
+# Start Docker, run tests, then stop and clean up the container
+
+npm run docker:test
+```
+**Manual Commands**  
+
+For more granular control during development, you can use the commands separately.
+```bash
+# 1. Start the MongoDB container in the background
+npm run docker:up
+
+# 2. Run tests once
+npm test
+
+# Or run tests in watch mode
+npm run test:watch
+
+# Or run tests with code coverage report
+npm run test:coverage
+
+# 3. Stop and remove the MongoDB container
+npm run docker:down
+```
+
+**Test Environment**  
+
+Tests use a dedicated MongoDB database named family-serve-test, which is separate from your development database. This database is automatically created and cleaned before each test run to guarantee a clean slate.
+
+**Test Data**  
+
+To ensure robust coverage, tests are seeded with a rich dataset that includes a variety of profiles, such as:
+
+Family Roles: Working Parent, Stay-at-home Parent, Teenager, Child, Grandparent.
+
+Health Goals: Weight Loss, Maintenance, Athletic, Muscle Gain, Recovery.
+
+Dietary Profiles: Gluten-Free, Vegetarian, Keto, Athletic Bulking, and various Food Allergies.
+
+
+## License
+
+ISC - [Learn more](LICENSE)
+>>>>>>> 8022fd4 (Implement tests and data for testing)
