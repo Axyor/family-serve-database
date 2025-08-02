@@ -1,4 +1,4 @@
-# Family Serve Database
+# 🥗🗃️ Family Serve Database
 
 MongoDB database layer for the Family Serve Delicious application. This package handles dietary profiles, preferences, and restrictions for family groups.
 
@@ -146,26 +146,67 @@ MONGODB_URI=mongodb://localhost:27017/family-serve
 
 ## Development
 
+### Installation
+
 ```bash
 # Install dependencies
 npm install
 
 # Build the package
 npm run build
-
-# Run tests
-npm test
 ```
 
-## Contributing
+### Testing
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'feat: Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+This project includes a comprehensive test suite to ensure code stability and reliability. Tests are run in an isolated environment using Docker, ensuring consistent and reproducible results without affecting your local development database.
+
+Prerequisites
+Docker must be installed and running on your machine.
+
+**Recommended Method (All-in-One)**  
+
+For a quick validation, this command handles the entire cycle: starts the container, runs the tests, and cleans up afterward.
+
+```bash
+# Start Docker, run tests, then stop and clean up the container
+
+npm run docker:test
+```
+**Manual Commands**  
+
+For more granular control during development, you can use the commands separately.
+```bash
+# 1. Start the MongoDB container in the background
+npm run docker:up
+
+# 2. Run tests once
+npm test
+
+# Or run tests in watch mode
+npm run test:watch
+
+# Or run tests with code coverage report
+npm run test:coverage
+
+# 3. Stop and remove the MongoDB container
+npm run docker:down
+```
+
+**Test Environment**  
+
+Tests use a dedicated MongoDB database named family-serve-test, which is separate from your development database. This database is automatically created and cleaned before each test run to guarantee a clean slate.
+
+**Test Data**  
+
+To ensure robust coverage, tests are seeded with a rich dataset that includes a variety of profiles, such as:
+
+Family Roles: Working Parent, Stay-at-home Parent, Teenager, Child, Grandparent.
+
+Health Goals: Weight Loss, Maintenance, Athletic, Muscle Gain, Recovery.
+
+Dietary Profiles: Gluten-Free, Vegetarian, Keto, Athletic Bulking, and various Food Allergies.
+
 
 ## License
 
 ISC - [Learn more](LICENSE)
-```

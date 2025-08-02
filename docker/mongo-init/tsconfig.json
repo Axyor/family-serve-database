@@ -1,0 +1,18 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "../../dist/mongo-init",
+        "rootDir": "../..",
+        "baseUrl": "../..",
+        "paths": {
+            "@/*": [
+                "src/*"
+            ]
+        },
+        "declaration": false
+    },
+    "include": [
+        "./**/*.ts",
+        "../../src/interfaces/**/*.ts"
+    ]
+}

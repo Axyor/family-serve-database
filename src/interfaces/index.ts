@@ -78,7 +78,7 @@ export interface IMemberProfile {
  * This is the main document schema for the 'groups' collection.
  */
 export interface IGroup {
-    readonly _id?: string;
+    readonly id?: string;
     name: string;
     members: IMemberProfile[];
     updatedAt: Date;

@@ -13,8 +13,8 @@ export class GroupRepository extends BaseRepository<GroupDocument, IGroup> {
     }
 
     async addMember(groupId: string, member: Omit<IMemberProfile, 'id'>): Promise<IGroup | null> {
-        const doc = await this.model.findByIdAndUpdate(
-            groupId,
+        const doc = await this.model.findOneAndUpdate(
+            { _id: groupId },
             {
                 $push: { members: member },
                 $set: { updatedAt: new Date() }
@@ -133,6 +133,65 @@ export class GroupRepository extends BaseRepository<GroupDocument, IGroup> {
             },
             {
                 $pull: { 'members.$.dietaryProfile.restrictions': { _id: restrictionId } },
+                $set: { updatedAt: new Date() }
+            },
+            { new: true }
+        );
+        return this.toInterface(doc);
+    }
+
+    async updateMemberAllergies(
+        groupId: string,
+        memberId: string,
+        allergies: string[]
+    ): Promise<IGroup | null> {
+        const doc = await this.model.findOneAndUpdate(
+            {
+                _id: groupId,
+                'members._id': memberId
+            },
+            {
+                $set: {
+                    'members.$.dietaryProfile.allergies': allergies,
+                    updatedAt: new Date()
+                }
+            },
+            { new: true }
+        );
+        return this.toInterface(doc);
+    }
+
+    async addMemberAllergy(
+        groupId: string,
+        memberId: string,
+        allergy: string
+    ): Promise<IGroup | null> {
+        const doc = await this.model.findOneAndUpdate(
+            {
+                _id: groupId,
+                'members._id': memberId
+            },
+            {
+                $push: { 'members.$.dietaryProfile.allergies': allergy },
+                $set: { updatedAt: new Date() }
+            },
+            { new: true }
+        );
+        return this.toInterface(doc);
+    }
+
+    async removeMemberAllergy(
+        groupId: string,
+        memberId: string,
+        allergy: string
+    ): Promise<IGroup | null> {
+        const doc = await this.model.findOneAndUpdate(
+            {
+                _id: groupId,
+                'members._id': memberId
+            },
+            {
+                $pull: { 'members.$.dietaryProfile.allergies': allergy },
                 $set: { updatedAt: new Date() }
             },
             { new: true }
