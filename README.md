@@ -8,10 +8,10 @@
 
 <div align="center">
 
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/Axyor/family-serve-delicious/actions)
-[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://github.com/Axyor/family-serve-delicious)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/Axyor/family-serve-database/actions)
+[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://github.com/Axyor/family-serve-database)
 [![NPM Version](https://img.shields.io/npm/v/@axyor/family-serve-database.svg)](https://www.npmjs.com/package/@axyor/family-serve-database)
-[![License](https://img.shields.io/npm/l/@axyor/family-serve-database.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
 
 </div>
 
@@ -180,4 +180,4 @@ The database uses Mongoose schemas to define the structure of the data.
 
 ## 📜 License
 
-This project is licensed under the ISC License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0). See the [LICENSE](LICENSE) file for details.
