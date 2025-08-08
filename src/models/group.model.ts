@@ -6,12 +6,12 @@ import {
     EGender,
     EActivityLevel,
     EHealthGoal,
-    IMemberProfile,
     IGroup
 } from '../interfaces/index.js';
 
-export interface MemberProfileDocument extends Document, Omit<IMemberProfile, 'id'> {
+export interface MemberProfileDocument extends Document {
     _id: mongoose.Types.ObjectId;
+    id: string;
 }
 
 const memberProfileSchema = new Schema({
@@ -108,7 +108,21 @@ const memberProfileSchema = new Schema({
     toJSON: {
         transform: (_, ret) => {
             if (ret._id) {
-                ret._id = ret._id.toString();
+                const { _id, ...rest } = ret;
+                ret = {
+                    ...rest,
+                    id: _id.toString()
+                };
+            }
+            if (ret.members) {
+                ret.members = ret.members.map((member: any) => {
+                    if (!member._id) return member;
+                    const { _id, ...rest } = member;
+                    return {
+                        ...rest,
+                        id: _id.toString()
+                    };
+                });
             }
             delete ret.__v;
             return ret;
@@ -116,8 +130,9 @@ const memberProfileSchema = new Schema({
     }
 });
 
-export interface GroupDocument extends Document, Omit<IGroup, '_id'> {
+export interface GroupDocument extends Document, Omit<IGroup, 'id'> {
     _id: mongoose.Types.ObjectId;
+    id: string;
 }
 
 const groupSchema = new Schema({
@@ -132,13 +147,23 @@ const groupSchema = new Schema({
     toJSON: {
         transform: (_, ret) => {
             if (ret._id) {
-                ret._id = ret._id.toString();
+                const id = ret._id.toString();
+                const { _id, ...rest } = ret;
+                ret = {
+                    ...rest,
+                    id
+                };
             }
             if (ret.members) {
-                ret.members = ret.members.map((member: any) => ({
-                    ...member,
-                    _id: member._id.toString()
-                }));
+                ret.members = ret.members.map((member: any) => {
+                    if (!member._id) return member;
+                    const id = member._id.toString();
+                    const { _id, ...rest } = member;
+                    return {
+                        ...rest,
+                        id
+                    };
+                });
             }
             delete ret.__v;
             return ret;
