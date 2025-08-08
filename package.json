@@ -4,8 +4,7 @@
     "description": "Database layer for Family Serve Delicious application",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Axyor/family-serve-delicious.git",
-        "directory": "packages/database"
+        "url": "git+https://github.com/Axyor/family-serve-database.git"
     },
     "publishConfig": {
         "registry": "https://npm.pkg.github.com"
@@ -15,8 +14,17 @@
     "type": "module",
     "scripts": {
         "build": "tsc",
+        "build:fixtures": "tsc -p ./docker/mongo-init/tsconfig.json",
         "test": "jest",
-        "clean": "rimraf dist"
+        "test:watch": "jest --watch",
+        "test:coverage": "jest --coverage",
+        "clean": "rimraf dist",
+        "prepublishOnly": "npm run clean && npm run build",
+        "docker:up": "docker compose up -d",
+        "docker:down": "docker compose down -v",
+        "docker:test": "npm run docker:up && sleep 2 && npm test && npm run docker:down",
+        "docker:show-data": "chmod +x ./docker/show-data.sh && ./docker/show-data.sh",
+        "docker:restart": "npm run docker:down && npm run docker:up"
     },
     "keywords": [
         "mongodb",
@@ -24,19 +32,27 @@
         "dietary-profiles"
     ],
     "author": "Axyor",
-    "license": "ISC",
-    "dependencies": {
-        "mongoose": "^7.5.0"
+    "license": "AGPL-3.0-or-later",
+    "engines": {
+        "node": ">=18"
     },
     "devDependencies": {
-        "@types/node": "^18.0.0",
-        "typescript": "^5.4.5",
-        "rimraf": "^5.0.1",
         "@types/jest": "^29.5.12",
+        "@types/node": "^18.19.121",
         "jest": "^29.7.0",
-        "ts-jest": "^29.1.2"
+        "mongoose": "^8.17.1",
+        "rimraf": "^6.0.1",
+        "ts-jest": "^29.1.2",
+        "typescript": "^5.9.2"
     },
-    "peerDependencies": {
-        "mongoose": "^7.5.0"
-    }
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        }
+    },
+    "files": [
+        "dist",
+        "README.md"
+    ]
 }

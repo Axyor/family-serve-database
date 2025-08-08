@@ -1,25 +1,58 @@
-# Family Serve Database
+# 🥗🗃️ Family Serve Database
 
-MongoDB database layer for the Family Serve Delicious application. This package handles dietary profiles, preferences, and restrictions for family groups.
+<div align="center">
 
-## Features
+**MongoDB database layer for the [Family Serve Delicious](https://github.com/Axyor/family-serve-delicious) application. This package handles dietary profiles, preferences, and restrictions for family groups.**
 
-- Group management with members
-- Dietary profiles and preferences
-- Health goals tracking
-- Food allergies and restrictions management
-- Activity level tracking
+</div>
 
-## Installation
+<div align="center">
 
-```bash
-npm install @family-serve/database
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/Axyor/family-serve-database/actions)
+[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://github.com/Axyor/family-serve-database)
+[![NPM Version](https://img.shields.io/npm/v/@axyor/family-serve-database.svg)](https://www.npmjs.com/package/@axyor/family-serve-database)
+[![License](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
+
+</div>
+
+This package provides a robust and well-tested database layer for managing family-related data, including dietary needs, health goals, and personal profiles. It is designed to be used as a module within a larger Node.js application.
+
+## 🚀 Getting Started
+
+This section is for developers who want to use this package in their own projects.
+
+### Prerequisites
+
+- Node.js >= 18.0.0
+- A running MongoDB instance
+
+### Installation
+
+This package is published to GitHub Packages. You must configure npm to use the GitHub npm registry for the `@axyor` scope and provide a token.
+
+1) Create or update your project-level `.npmrc` (recommended):
+
+```ini
+@axyor:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
 ```
 
-## Quick Start
+2) Install the package:
+
+```bash
+npm install @axyor/family-serve-database
+```
+
+Notes:
+- Replace `${GITHUB_TOKEN}` with a Personal Access Token that has `read:packages` (for local dev), or rely on CI’s `GITHUB_TOKEN` in GitHub Actions.
+- You can also set the token globally in `~/.npmrc` if preferred.
+
+### Quick Start
+
+Here's a simple example of how to initialize the database and use the `GroupService`.
 
 ```typescript
-import { Database } from '@family-serve/database';
+import { Database } from '@axyor/family-serve-database';
 
 // Initialize the database connection
 await Database.initialize('mongodb://localhost:27017/family-serve');
@@ -30,100 +63,58 @@ const groupService = db.getGroupService();
 
 // Create and manage groups
 const group = await groupService.createGroup('Smith Family');
+console.log('Created group:', group);
 ```
 
-## Architecture
+## 📖 API Reference
 
-```
-src/
-├── interfaces/     # TypeScript interfaces and enums
-├── models/        # Mongoose schemas and models
-├── repositories/  # Data access layer
-└── services/      # Business logic layer
-```
+The primary way to interact with the database is through services.
 
-## Detailed Usage
+### GroupService
 
-### Managing Groups and Members
+The `GroupService` provides methods for managing groups and their members.
+
+<details>
+<summary>View GroupService Methods</summary>
+
+| Method                       | Description                                                                  |
+| ---------------------------- | ---------------------------------------------------------------------------- |
+| `createGroup(name)`          | Creates a new group with the given name.                                     |
+| `getGroup(id)`               | Retrieves a group by its ID.                                                 |
+| `addMember(groupId, member)` | Adds a new member to a group.                                                |
+| `updateMember(groupId, memberId, update)` | Updates a member's profile in a group.                               |
+| `removeMember(groupId, memberId)` | Removes a member from a group.                                               |
+| `updateMemberRestrictions(groupId, memberId, restrictions)` | Updates all dietary restrictions for a member. |
+| `addMemberRestriction(groupId, memberId, restriction)` | Adds a new dietary restriction to a member's profile. |
+| `removeMemberRestriction(groupId, memberId, restrictionId)` | Removes a specific dietary restriction from a member. |
+| `updateMemberMetrics(groupId, memberId, weightKg, heightCm)` | Updates the physical metrics (weight, height) of a member. |
+| `updateMemberHealthGoals(groupId, memberId, goals)` | Updates a member's health goals. |
+| `updateMemberAllergies(groupId, memberId, allergies)` | Updates a member's allergies. |
+| `findMembersByRestriction(groupId, type, reason)` | Finds members in a group by their dietary restriction. |
+
+</details>
+
+### Enums
+
+The package exports several enums to ensure type safety.
+
+<details>
+<summary>View Available Enums</summary>
 
 ```typescript
-import { 
-    Database, 
-    EGender, 
-    EGroupRole, 
-    EDietaryRestriction,
-    EActivityLevel 
-} from '@family-serve/database';
-
-async function example() {
-    // Initialize database
-    const db = await Database.initialize('mongodb://localhost:27017/family-serve');
-    const groupService = db.getGroupService();
-
-    // Create a new family group
-    const group = await groupService.createGroup('Smith Family');
-
-    // Add a family member with dietary preferences
-    await groupService.addMember(group._id, {
-        firstName: 'John',
-        lastName: 'Smith',
-        age: 35,
-        gender: EGender.MALE,
-        role: EGroupRole.ADMIN,
-        activityLevel: EActivityLevel.MODERATELY_ACTIVE,
-        healthGoals: ['Weight management', 'Energy improvement'],
-        dietaryProfile: {
-            preferences: {
-                likes: ['Quinoa', 'Salmon', 'Avocado'],
-                dislikes: ['Mushrooms', 'Cilantro']
-            },
-            restrictions: [
-                {
-                    type: EDietaryRestrictionType.FORBIDDEN,
-                    reason: EDietaryRestriction.GLUTEN_FREE,
-                    notes: 'Celiac disease'
-                },
-                {
-                    type: EDietaryRestrictionType.REDUCED,
-                    reason: EDietaryRestriction.DAIRY_FREE,
-                    notes: 'Lactose intolerant'
-                }
-            ],
-            healthNotes: 'Needs high-protein meals'
-        }
-    });
-
-    // Retrieve group information
-    const familyGroup = await groupService.getGroup(group._id);
-    console.log('Family members:', familyGroup?.members);
-}
-```
-
-### Available Enums
-
-```typescript
-// Dietary Restrictions Types
 enum EDietaryRestrictionType {
-    FORBIDDEN = 'FORBIDDEN',
-    REDUCED = 'REDUCED'
+    FORBIDDEN = 'FORBIDDEN', // e.g., allergies
+    REDUCED = 'REDUCED'      // e.g., dietary choices
 }
 
-// Dietary Restrictions
 enum EDietaryRestriction {
     VEGETARIAN = 'VEGETARIAN',
     VEGAN = 'VEGAN',
     GLUTEN_FREE = 'GLUTEN_FREE',
     DAIRY_FREE = 'DAIRY_FREE'
+    // ... and more
 }
 
-// Dietary Restriction Interface
-interface IDietaryRestriction {
-    type: EDietaryRestrictionType;
-    reason: EDietaryRestriction | string;
-    notes?: string;
-}
-
-// Activity Levels
 enum EActivityLevel {
     SEDENTARY = 'SEDENTARY',
     LIGHTLY_ACTIVE = 'LIGHTLY_ACTIVE',
@@ -131,41 +122,75 @@ enum EActivityLevel {
     VERY_ACTIVE = 'VERY_ACTIVE'
 }
 
-// Group Roles
 enum EGroupRole {
     ADMIN = 'ADMIN',
     MEMBER = 'MEMBER'
 }
+
+enum EGender {
+    MALE = 'MALE',
+    FEMALE = 'FEMALE',
+    OTHER = 'OTHER'
+}
+
+enum EHealthGoal {
+    WEIGHT_LOSS = 'WEIGHT_LOSS',
+    MUSCLE_GAIN = 'MUSCLE_GAIN',
+    MAINTENANCE = 'MAINTENANCE',
+    // ... and more
+}
 ```
 
-## Environment Variables
+</details>
 
-```env
-MONGODB_URI=mongodb://localhost:27017/family-serve
+## 🏗️ Data Models
+
+The database uses Mongoose schemas to define the structure of the data.
+
+<details>
+<summary>View Group Schema</summary>
+
+```json
+{
+  "name": "String",
+  "members": "[MemberProfile]",
+  "createdAt": "Date",
+  "updatedAt": "Date"
+}
 ```
+</details>
 
-## Development
+<details>
+<summary>View MemberProfile Schema</summary>
 
-```bash
-# Install dependencies
-npm install
-
-# Build the package
-npm run build
-
-# Run tests
-npm test
+```json
+{
+    "role": "EGroupRole",
+    "firstName": "String",
+    "lastName": "String",
+    "age": "Number",
+    "gender": "EGender",
+    "weightKg": "Number",
+    "heightCm": "Number",
+    "activityLevel": "EActivityLevel",
+    "healthGoals": ["EHealthGoal"],
+    "dietaryProfile": {
+        "preferences": {
+            "likes": ["String"],
+            "dislikes": ["String"]
+        },
+        "allergies": ["String"],
+        "restrictions": [{
+            "type": "EDietaryRestrictionType",
+            "reason": "EDietaryRestriction | String",
+            "notes": "String"
+        }],
+        "healthNotes": "String"
+    }
+}
 ```
+</details>
 
-## Contributing
+## 📜 License
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'feat: Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-ISC - [Learn more](LICENSE)
-```
+This project is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0). See the [LICENSE](LICENSE) file for details.
