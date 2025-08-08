@@ -106,7 +106,7 @@ const memberProfileSchema = new Schema({
     }
 }, {
     toJSON: {
-        transform: (_, ret) => {
+        transform: (_: any, ret: any) => {
             if (ret._id) {
                 const { _id, ...rest } = ret;
                 ret = {
@@ -114,15 +114,18 @@ const memberProfileSchema = new Schema({
                     id: _id.toString()
                 };
             }
-            if (ret.members) {
-                ret.members = ret.members.map((member: any) => {
-                    if (!member._id) return member;
-                    const { _id, ...rest } = member;
-                    return {
-                        ...rest,
-                        id: _id.toString()
-                    };
-                });
+            delete ret.__v;
+            return ret;
+        }
+    },
+    toObject: {
+        transform: (_: any, ret: any) => {
+            if (ret._id) {
+                const { _id, ...rest } = ret;
+                ret = {
+                    ...rest,
+                    id: _id.toString()
+                };
             }
             delete ret.__v;
             return ret;
@@ -145,7 +148,32 @@ const groupSchema = new Schema({
 }, {
     timestamps: true,
     toJSON: {
-        transform: (_, ret) => {
+        transform: (_: any, ret: any) => {
+            if (ret._id) {
+                const id = ret._id.toString();
+                const { _id, ...rest } = ret;
+                ret = {
+                    ...rest,
+                    id
+                };
+            }
+            if (ret.members) {
+                ret.members = ret.members.map((member: any) => {
+                    if (!member._id) return member;
+                    const id = member._id.toString();
+                    const { _id, ...rest } = member;
+                    return {
+                        ...rest,
+                        id
+                    };
+                });
+            }
+            delete ret.__v;
+            return ret;
+        }
+    },
+    toObject: {
+        transform: (_: any, ret: any) => {
             if (ret._id) {
                 const id = ret._id.toString();
                 const { _id, ...rest } = ret;

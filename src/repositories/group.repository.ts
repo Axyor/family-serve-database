@@ -9,7 +9,7 @@ export class GroupRepository extends BaseRepository<GroupDocument, IGroup> {
 
     protected toInterface(doc: GroupDocument | null): IGroup | null {
         if (!doc) return null;
-        return doc.toJSON();
+        return doc.toObject() as unknown as IGroup;
     }
 
     async addMember(groupId: string, member: Omit<IMemberProfile, 'id'>): Promise<IGroup | null> {
