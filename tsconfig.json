@@ -3,19 +3,22 @@
         "target": "ES2022",
         "module": "ES2022",
         "moduleResolution": "node",
+    "lib": ["ES2022"],
         "declaration": true,
         "outDir": "./dist",
         "strict": true,
         "esModuleInterop": true,
         "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "types": ["node", "jest"],
+    "typeRoots": ["./node_modules/@types"]
     },
     "include": [
-        "src"
+        "src",
+        "src/**/*.test.ts"
     ],
     "exclude": [
         "node_modules",
-        "dist",
-        "**/*.test.ts"
+        "dist"
     ]
 }
