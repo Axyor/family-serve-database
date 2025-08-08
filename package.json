@@ -4,8 +4,7 @@
     "description": "Database layer for Family Serve Delicious application",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Axyor/family-serve-delicious.git",
-        "directory": "packages/database"
+        "url": "git+https://github.com/Axyor/family-serve-database.git"
     },
     "publishConfig": {
         "registry": "https://npm.pkg.github.com"
@@ -14,12 +13,13 @@
     "types": "dist/index.d.ts",
     "type": "module",
     "scripts": {
-    "build": "tsc",
+        "build": "tsc",
         "build:fixtures": "tsc -p ./docker/mongo-init/tsconfig.json",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "test:coverage": "jest --coverage",
         "clean": "rimraf dist",
+        "prepublishOnly": "npm run clean && npm run build",
         "docker:up": "docker compose up -d",
         "docker:down": "docker compose down -v",
         "docker:test": "npm run docker:up && sleep 2 && npm test && npm run docker:down",

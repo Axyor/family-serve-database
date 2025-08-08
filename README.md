@@ -28,11 +28,24 @@ This section is for developers who want to use this package in their own project
 
 ### Installation
 
-To install the package, use npm:
+This package is published to GitHub Packages. You must configure npm to use the GitHub npm registry for the `@axyor` scope and provide a token.
+
+1) Create or update your project-level `.npmrc` (recommended):
+
+```ini
+@axyor:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
+```
+
+2) Install the package:
 
 ```bash
 npm install @axyor/family-serve-database
 ```
+
+Notes:
+- Replace `${GITHUB_TOKEN}` with a Personal Access Token that has `read:packages` (for local dev), or rely on CI’s `GITHUB_TOKEN` in GitHub Actions.
+- You can also set the token globally in `~/.npmrc` if preferred.
 
 ### Quick Start
 
