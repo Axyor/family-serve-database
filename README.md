@@ -10,7 +10,6 @@
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/Axyor/family-serve-database/actions)
 [![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://github.com/Axyor/family-serve-database)
-[![NPM Version](https://img.shields.io/npm/v/@axyor/family-serve-database.svg)](https://www.npmjs.com/package/@axyor/family-serve-database)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
 
 </div>
