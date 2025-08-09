@@ -50,10 +50,17 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Configure npm for GitHub Packages
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@axyor'
+          always-auth: true
+
       - name: Publish to GitHub Packages
         if: startsWith(github.ref, 'refs/tags/v')
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "@axyor:registry=https://npm.pkg.github.com" > .npmrc
-          npm publish
+        run: npm publish
