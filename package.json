@@ -1,6 +1,6 @@
 {
     "name": "@axyor/family-serve-database",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Database layer for Family Serve Delicious application",
     "repository": {
         "type": "git",
