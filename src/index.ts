@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { GroupService } from './services/group.service.js';
 export * from './interfaces/index.js';
+export * from './config/index.js';
 
 export class Database {
     private static instance: Database;

@@ -63,4 +63,10 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+<<<<<<< HEAD
         run: npm publish
+=======
+        run: |
+          echo "@axyor:registry=https://npm.pkg.github.com" > .npmrc
+          npm publish
+>>>>>>> 52cb860 (ci: prepare for publishing purpose)
