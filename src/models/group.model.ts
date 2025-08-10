@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import { getNameSearchCollation } from '../config/index.js';
 import {
     EDietaryRestriction,
     EDietaryRestrictionType,
@@ -199,7 +200,14 @@ const groupSchema = new Schema({
     }
 });
 
-groupSchema.index({ name: 1 });
+// Create an index on name using the configured collation (if any) so findByName can use it efficiently
+const __nameIndexCollation = getNameSearchCollation();
+groupSchema.index(
+    { name: 1 },
+    __nameIndexCollation
+        ? { name: 'idx_group_name_collated', collation: __nameIndexCollation }
+        : { name: 'idx_group_name' }
+);
 memberProfileSchema.index({ firstName: 1, lastName: 1 });
 
 export const Group = mongoose.model<GroupDocument>('Group', groupSchema);
