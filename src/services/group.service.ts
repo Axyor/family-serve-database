@@ -21,12 +21,26 @@ export class GroupService {
     }
 
     /**
+     * Lists all groups
+     */
+    async listGroups(): Promise<IGroup[]> {
+        return this.repository.findAll();
+    }
+
+    /**
      * Retrieves a group by its ID
      * @param id The ID of the group to retrieve
      * @returns The group if found, null otherwise
      */
     async getGroup(id: string): Promise<IGroup | null> {
         return this.repository.findById(id);
+    }
+
+    /**
+     * Finds a group by its name
+     */
+    async findByName(name: string): Promise<IGroup | null> {
+        return this.repository.findByName(name);
     }
 
     /**
