@@ -1,4 +1,4 @@
-import { IMemberProfile, IGroup } from '../../src/interfaces/index';
+import { IMemberProfile, IGroup } from '../../src/interfaces/types';
 import { DIETARY_PROFILES } from './fixtures/dietary-profiles';
 import { HEALTH_PROFILES } from './fixtures/health-profiles';
 import { FAMILY_MEMBERS } from './fixtures/family-members';

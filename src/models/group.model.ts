@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import { transformWithId } from '../utils/transform.js';
 import { getNameSearchCollation } from '../config/index.js';
 import {
     EDietaryRestriction,
@@ -7,8 +8,10 @@ import {
     EGender,
     EActivityLevel,
     EHealthGoal,
-    IGroup
-} from '../interfaces/index.js';
+    EBudgetLevel,
+    ECookingSkill
+} from '../interfaces/enums.js';
+import { IGroup } from '../interfaces/types.js';
 
 export interface MemberProfileDocument extends Document {
     _id: mongoose.Types.ObjectId;
@@ -64,6 +67,13 @@ const memberProfileSchema = new Schema({
         enum: Object.values(EHealthGoal),
         trim: true
     }],
+    nutritionTargets: {
+        targetCalories: { type: Number, min: 0 },
+        proteinGr: { type: Number, min: 0 },
+        carbsGr: { type: Number, min: 0 },
+        fatsGr: { type: Number, min: 0 },
+        rationale: { type: String, trim: true }
+    },
     dietaryProfile: {
         preferences: {
             likes: [{
@@ -104,7 +114,12 @@ const memberProfileSchema = new Schema({
             type: String,
             trim: true
         }
-    }
+    },
+    cuisinePreferences: [{ type: String, trim: true }],
+    budgetLevel: { type: String, enum: Object.values(EBudgetLevel) },
+    cookingSkill: { type: String, enum: Object.values(ECookingSkill) },
+    mealFrequency: { type: Number, min: 1, max: 10 },
+    fastingWindow: { type: String, trim: true }
 }, {
     toJSON: {
         transform: (_: any, ret: any) => {
@@ -148,59 +163,14 @@ const groupSchema = new Schema({
     members: [memberProfileSchema]
 }, {
     timestamps: true,
-    toJSON: {
-        transform: (_: any, ret: any) => {
-            if (ret._id) {
-                const id = ret._id.toString();
-                const { _id, ...rest } = ret;
-                ret = {
-                    ...rest,
-                    id
-                };
-            }
-            if (ret.members) {
-                ret.members = ret.members.map((member: any) => {
-                    if (!member._id) return member;
-                    const id = member._id.toString();
-                    const { _id, ...rest } = member;
-                    return {
-                        ...rest,
-                        id
-                    };
-                });
-            }
-            delete ret.__v;
-            return ret;
-        }
-    },
-    toObject: {
-        transform: (_: any, ret: any) => {
-            if (ret._id) {
-                const id = ret._id.toString();
-                const { _id, ...rest } = ret;
-                ret = {
-                    ...rest,
-                    id
-                };
-            }
-            if (ret.members) {
-                ret.members = ret.members.map((member: any) => {
-                    if (!member._id) return member;
-                    const id = member._id.toString();
-                    const { _id, ...rest } = member;
-                    return {
-                        ...rest,
-                        id
-                    };
-                });
-            }
-            delete ret.__v;
-            return ret;
-        }
-    }
+    toJSON: { transform: (_: any, ret: any) => transformWithId(ret) },
+    toObject: { transform: (_: any, ret: any) => transformWithId(ret) }
 });
 
-// Create an index on name using the configured collation (if any) so findByName can use it efficiently
+groupSchema.virtual('numberOfPeople').get(function (this: any) {
+    return this.members ? this.members.length : 0;
+});
+
 const __nameIndexCollation = getNameSearchCollation();
 groupSchema.index(
     { name: 1 },
