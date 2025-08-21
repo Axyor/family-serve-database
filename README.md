@@ -14,7 +14,7 @@
 
 </div>
 
-This package provides a robust and well-tested database layer for managing family-related data, including dietary needs, health goals, and personal profiles. It is designed to be used as a module within a larger Node.js application.
+Database / domain layer for managing families, nutrition profiles, restrictions, and health goals. Includes validation (Zod), domain layer (GroupEntity / MemberEntity), Mongoose virtuals, and concurrency tests.
 
 ## 🚀 Getting Started
 
@@ -89,7 +89,7 @@ The `GroupService` provides methods for managing groups and their members.
 | `updateMemberMetrics(groupId, memberId, weightKg, heightCm)` | Updates the physical metrics (weight, height) of a member. |
 | `updateMemberHealthGoals(groupId, memberId, goals)` | Updates a member's health goals. |
 | `updateMemberAllergies(groupId, memberId, allergies)` | Updates a member's allergies. |
-| `findMembersByRestriction(groupId, type, reason)` | Finds members in a group by their dietary restriction. |
+| `findMembersByRestriction(groupId, type, reason)` | Returns summary {groupId,name,totalMembers,filteredCount,members[]} via domain entity. |
 
 </details>
 
@@ -189,6 +189,57 @@ The database uses Mongoose schemas to define the structure of the data.
 }
 ```
 </details>
+
+## 🧠 Domain Layer
+
+Domain entities encapsulate behavior beyond raw persistence:
+
+```ts
+const group = await groupService.getGroup(id);
+// Wrap in entity to add richer behavior
+import { GroupEntity } from '@axyor/family-serve-database';
+const entity = new GroupEntity(group!);
+const glutenFree = entity.summaryByRestriction('FORBIDDEN','GLUTEN_FREE');
+```
+
+Benefits:
+- Single place to evolve business logic.
+- Keeps repository/service thin.
+- Easier future persistence changes (embedded → separate collection).
+
+## ✅ Validation
+
+Inputs validated with Zod (`GroupCreateSchema`, `MemberProfileCreateSchema`). Invalid data → exception before hitting DB.
+
+## 🧪 Testing
+
+Run all tests with Docker Mongo:
+```bash
+npm run docker:test
+```
+Focus during development:
+```bash
+docker compose up -d
+npm test -- --watch
+```
+
+Included test types:
+- Repository CRUD + nested updates
+- Concurrency (parallel addMember)
+- Validation & error tests
+- Domain summary behavior
+
+## 🔧 Developer Experience
+
+Scripts:
+```bash
+npm run lint       # analyse
+npm run lint:fix   # auto-fix
+npm run build      # compile TS
+npm run docker:test
+```
+
+Editor support: `.editorconfig`, ESLint + TypeScript rules.
 
 ## 📜 License
 

@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import { GroupService } from './services/group.service.js';
-export * from './interfaces/index.js';
+export * from './interfaces/enums.js';
+export * from './interfaces/types.js';
+export * from './interfaces/validation.js';
 export * from './config/index.js';
 
 export class Database {
