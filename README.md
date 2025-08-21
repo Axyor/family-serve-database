@@ -16,6 +16,8 @@
 
 Database / domain layer for managing families, nutrition profiles, restrictions, and health goals. Includes validation (Zod), domain layer (GroupEntity / MemberEntity), Mongoose virtuals, and concurrency tests.
 
+> See the [CHANGELOG](CHANGELOG.md) for release history. Current major: 2.x.
+
 ## 🚀 Getting Started
 
 This section is for developers who want to use this package in their own projects.
