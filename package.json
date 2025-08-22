@@ -1,6 +1,6 @@
 {
     "name": "@axyor/family-serve-database",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "Database layer for Family Serve Delicious application",
     "type": "module",
     "sideEffects": false,
