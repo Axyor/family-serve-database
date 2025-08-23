@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file. Adheres (lightly) to [Keep a Changelog](https://keepachangelog.com) and [SemVer](https://semver.org).
 
+### [2.0.2] - 2025-08-23
+Changed
+- Additional CI workflow tweaks for publish (version bump only, no runtime code changes).
+
 ### [2.0.1] - 2025-08-22
 Changed
 - CI publish workflow adjustments (no runtime code changes).
