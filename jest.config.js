@@ -1,4 +1,5 @@
-export default {
+/** Jest configuration (CommonJS) to avoid Node ESM ExperimentalWarning */
+module.exports = {
     preset: 'ts-jest',
     testEnvironment: 'node',
     extensionsToTreatAsEsm: ['.ts'],
@@ -14,4 +15,4 @@ export default {
             },
         ],
     },
-}
+};
