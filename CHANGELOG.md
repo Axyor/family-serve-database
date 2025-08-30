@@ -6,6 +6,18 @@ All notable changes to this project will be documented in this file. Adheres (li
 Changed
 - CI publish workflow adjustments (no runtime code changes).
 
+### [2.1.0] - 2025-08-30
+Added
+- Dual module distribution (ESM + CommonJS) via conditional exports.
+	- ESM: `import { Database } from '@axyor/family-serve-database'`
+	- CJS: `const { Database } = require('@axyor/family-serve-database')`
+	- Both forms expose identical named exports; enums remain frozen objects.
+Internal
+- Build split into `dist/esm` and `dist/cjs` from a single TS source tree.
+- Added tsconfig.{esm,cjs}.json and updated scripts.
+Migration Notes
+- No breaking changes. Consumers using dynamic import hacks in CommonJS can simplify to direct `require` now.
+
 ### [2.0.0] - 2025-08-22
 Breaking
 - Removed persisted `numberOfPeople` field in favor of a Mongoose virtual (computed from members length).

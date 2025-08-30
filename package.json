@@ -1,8 +1,7 @@
 {
     "name": "@axyor/family-serve-database",
-    "version": "2.0.1",
+    "version": "2.1.0",
     "description": "Database layer for Family Serve Delicious application",
-    "type": "module",
     "sideEffects": false,
     "repository": {
         "type": "git",
@@ -13,13 +12,17 @@
     },
     "homepage": "https://github.com/Axyor/family-serve-database#readme",
     "scripts": {
-        "build": "tsc",
+        "build": "rimraf dist && tsc -p tsconfig.esm.json && tsc -p tsconfig.cjs.json && cp dist/esm/*.d.ts dist/cjs/ 2>/dev/null || true",
+        "build:types": "tsc -p tsconfig.esm.json && cp dist/esm/*.d.ts dist/cjs/ 2>/dev/null || true",
         "build:fixtures": "tsc -p ./docker/mongo-init/tsconfig.json",
         "test": "jest",
         "test:watch": "jest --watch",
         "test:coverage": "jest --coverage",
         "clean": "rimraf dist",
         "prepublishOnly": "npm run clean && npm run build",
+        "test:cjs-consume": "node test-cjs.cjs",
+        "test:esm-consume": "node test-esm.mjs",
+        "test:dual-consume": "npm run build && node test-cjs.cjs && node test-esm.mjs",
         "docker:up": "docker compose up -d",
         "docker:down": "docker compose down -v",
         "docker:test": "npm run docker:up && sleep 2 && npm test && npm run docker:down",
@@ -60,10 +63,14 @@
         "ts-jest": "^29.1.2",
         "typescript": "^5.9.2"
     },
+    "main": "dist/cjs/index.js",
+    "module": "dist/esm/index.js",
+    "types": "dist/esm/index.d.ts",
     "exports": {
         ".": {
-            "types": "./dist/index.d.ts",
-            "default": "./dist/index.js"
+            "import": "./dist/esm/index.js",
+            "require": "./dist/cjs/index.js",
+            "types": "./dist/esm/index.d.ts"
         }
     },
     "files": [

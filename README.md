@@ -48,7 +48,25 @@ Notes:
 - Replace `${GITHUB_TOKEN}` with a Personal Access Token that has `read:packages` (for local dev), or rely on CI’s `GITHUB_TOKEN` in GitHub Actions.
 - You can also set the token globally in `~/.npmrc` if preferred.
 
-### Quick Start
+### Quick Start (ESM & CommonJS)
+
+You can consume this package from either native ESM or CommonJS without dynamic import hacks.
+
+ESM (Node >=18):
+
+```ts
+import { Database } from '@axyor/family-serve-database';
+await Database.initialize('mongodb://localhost:27017/family-serve');
+```
+
+CommonJS:
+
+```js
+const { Database } = require('@axyor/family-serve-database');
+Database.initialize('mongodb://localhost:27017/family-serve').then(() => {
+    // ...
+});
+```
 
 Here's a simple example of how to initialize the database and use the `GroupService`.
 
