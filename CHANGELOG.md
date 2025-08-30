@@ -54,3 +54,4 @@ Migration Notes
 ---
 
 [2.0.0]: https://github.com/Axyor/family-serve-database/compare/v1.0.2...v2.0.0
+[2.1.0]: https://github.com/Axyor/family-serve-database/compare/v2.0.2...v2.1.0
