@@ -243,6 +243,26 @@ docker compose up -d
 npm test -- --watch
 ```
 
+### 🔐 Secure local MongoDB with .env
+
+For local development with Docker, credentials are provided via a `.env` file (not committed).
+
+1) Copy the example and adjust values:
+```bash
+cp .env.example .env
+```
+2) Start MongoDB:
+```bash
+docker compose up -d
+```
+
+The `docker-compose.yml` reads the following variables from `.env`:
+- `MONGO_INITDB_DATABASE`
+- `MONGO_INITDB_ROOT_USERNAME`
+- `MONGO_INITDB_ROOT_PASSWORD`
+
+Note: The test suites connect to `mongodb://test_user:test_password@localhost:27017/...` by default; the `.env.example` aligns with these defaults for convenience.
+
 Included test types:
 - Repository CRUD + nested updates
 - Concurrency (parallel addMember)

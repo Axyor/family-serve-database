@@ -4,9 +4,11 @@ services:
     ports:
       - "27017:27017"
     environment:
-      - MONGO_INITDB_DATABASE=family-serve-test
-      - MONGO_INITDB_ROOT_USERNAME=test_user
-      - MONGO_INITDB_ROOT_PASSWORD=test_password
+      # Database name and root credentials are now provided via .env file to avoid committing secrets.
+      # Create a .env file (see .env.example) with:
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
     volumes:
       - mongodb_data:/data/db
       - ./docker/mongo-init:/docker-entrypoint-initdb.d
