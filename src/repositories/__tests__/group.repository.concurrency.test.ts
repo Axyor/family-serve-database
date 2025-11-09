@@ -50,8 +50,9 @@ describe('GroupRepository Concurrency', () => {
       dietaryProfile: { preferences: { likes: [], dislikes: [] }, allergies: [], restrictions: [] }
     });
     const memberId = added!.members[0].id;
+    expect(memberId).toBeDefined();
 
-    const after = await repository.updateMember(group.id!, memberId, {
+    const after = await repository.updateMember(group.id!, memberId!, {
       someRandomField: 'ignored' as any,
       firstName: 'Johnny'
     } as any);
