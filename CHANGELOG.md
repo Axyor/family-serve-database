@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. Adheres (lightly) to [Keep a Changelog](https://keepachangelog.com) and [SemVer](https://semver.org).
 
+### [2.2.0] - 2025-11-09
+Changed
+- Updated dependencies to latest versions for security and compatibility.
+- Fixed Docker Compose configuration for improved development environment setup.
+- Updated database model conception with improved type definitions.
+
+Added
+- `.env.example` file with environment variable templates for easier setup.
+- Enhanced `.gitignore` with better coverage of generated and temporary files.
+- Improved README documentation with clearer setup instructions.
+
+Fixed
+- Repository test adjustments for better reliability and maintainability.
+
 ### [2.0.2] - 2025-08-23
 Changed
 - Additional CI workflow tweaks for publish (version bump only, no runtime code changes).
