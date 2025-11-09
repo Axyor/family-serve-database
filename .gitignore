@@ -31,3 +31,9 @@ yarn-error.log*
 # OS
 .DS_Store
 Thumbs.db
+
+# GitHub Copilot custom instructions
+.github/prompts/
+.github/chatmodes/
+.github/instructions/
+

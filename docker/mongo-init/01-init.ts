@@ -10,9 +10,8 @@ function createMember(
     baseProfile: IMemberTemplate,
     healthProfile: IHealthTemplate,
     dietaryProfile: IDietaryTemplate
-): IMemberProfile {
+): Omit<IMemberProfile, 'id'> {
     return {
-        id: `${firstName.toLowerCase()}-${lastName.toLowerCase()}-${Date.now()}`,
         firstName,
         lastName,
         ...baseProfile,

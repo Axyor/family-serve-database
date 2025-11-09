@@ -15,7 +15,7 @@ export interface IDietaryRestriction {
 }
 
 export interface IMemberProfile {
-  readonly id: string;
+  readonly id?: string;
   role: EGroupRole;
   firstName: string;
   lastName: string;

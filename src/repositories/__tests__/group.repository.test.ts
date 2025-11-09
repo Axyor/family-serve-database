@@ -78,7 +78,7 @@ describe('GroupRepository', () => {
                 }
             };
 
-            const afterUpdate = await repository.updateMember(group.id!, memberId, updateData);
+            const afterUpdate = await repository.updateMember(group.id!, memberId!, updateData);
 
             expect(afterUpdate).not.toBeNull();
             expect(afterUpdate?.members[0].activityLevel).toBe(EActivityLevel.VERY_ACTIVE);
@@ -113,6 +113,7 @@ describe('GroupRepository', () => {
             expect(groupWithMember).not.toBeNull();
             expect(groupWithMember?.numberOfPeople).toBe(1);
             const memberId = groupWithMember!.members[0].id;
+            expect(memberId).toBeDefined();
 
             const restriction: IDietaryRestriction = {
                 type: EDietaryRestrictionType.FORBIDDEN,
@@ -122,7 +123,7 @@ describe('GroupRepository', () => {
 
             const afterAddRestriction = await repository.addMemberRestriction(
                 group.id!,
-                memberId,
+                memberId!,
                 restriction
             );
 
@@ -147,7 +148,7 @@ describe('GroupRepository', () => {
 
             const afterUpdateRestrictions = await repository.updateMemberRestrictions(
                 group.id!,
-                memberId,
+                memberId!,
                 newRestrictions
             );
 
@@ -182,11 +183,12 @@ describe('GroupRepository', () => {
             expect(groupWithMember).not.toBeNull();
             expect(groupWithMember?.numberOfPeople).toBe(1);
             const memberId = groupWithMember!.members[0].id;
+            expect(memberId).toBeDefined();
 
 
             const afterAddAllergy = await repository.addMemberAllergy(
                 group.id!,
-                memberId,
+                memberId!,
                 'Shellfish'
             );
 
@@ -199,7 +201,7 @@ describe('GroupRepository', () => {
 
             const afterUpdateAllergies = await repository.updateMemberAllergies(
                 group.id!,
-                memberId,
+                memberId!,
                 newAllergies
             );
 
@@ -213,7 +215,7 @@ describe('GroupRepository', () => {
     
             const afterRemoveAllergy = await repository.removeMemberAllergy(
                 group.id!,
-                memberId,
+                memberId!,
                 'Soy'
             );
 
@@ -267,7 +269,8 @@ describe('GroupRepository', () => {
             expect(groupWithTwoMembers!.members).toHaveLength(2);
 
             const firstMemberId = groupWithTwoMembers!.members[0].id;
-            const groupAfterRemoval = await repository.removeMember(group.id!, firstMemberId);
+            expect(firstMemberId).toBeDefined();
+            const groupAfterRemoval = await repository.removeMember(group.id!, firstMemberId!);
             expect(groupAfterRemoval).not.toBeNull();
             expect(groupAfterRemoval!.numberOfPeople).toBe(1);
             expect(groupAfterRemoval!.members).toHaveLength(1);
