@@ -1,4 +1,4 @@
-import { Document, Model } from 'mongoose';
+import { Document, Model, UpdateQuery } from 'mongoose';
 export abstract class BaseRepository<TDocument extends Document, TInterface> {
     constructor(protected readonly model: Model<TDocument>) { }
 
@@ -15,7 +15,7 @@ export abstract class BaseRepository<TDocument extends Document, TInterface> {
     }
 
     async create(data: Partial<TInterface>): Promise<TInterface> {
-        const entity = new this.model(data as any);
+        const entity = new this.model(data as unknown);
         const doc = await entity.save();
         const result = this.toInterface(doc);
         if (!result) throw new Error('Failed to create entity');
@@ -23,8 +23,8 @@ export abstract class BaseRepository<TDocument extends Document, TInterface> {
     }
 
     async update(id: string, data: Partial<TInterface>): Promise<TInterface | null> {
-        const doc = await this.model.findByIdAndUpdate(id, data as any, { new: true });
-        return this.toInterface(doc);
+        const doc = await this.model.findByIdAndUpdate(id, data as unknown as UpdateQuery<TDocument>, { new: true });
+        return this.toInterface(doc as unknown as TDocument);
     }
 
     async delete(id: string): Promise<boolean> {
