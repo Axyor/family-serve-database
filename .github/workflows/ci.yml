@@ -19,7 +19,7 @@ jobs:
       mongodb:
         image: mongo:latest
         ports:
-          - 27017:27017
+          - 27018:27017
         env:
           MONGO_INITDB_DATABASE: family-serve-test
           MONGO_INITDB_ROOT_USERNAME: test_user

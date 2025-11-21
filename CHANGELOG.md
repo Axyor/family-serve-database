@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file. Adheres (lightly) to [Keep a Changelog](https://keepachangelog.com) and [SemVer](https://semver.org).
 
+### [2.2.2] - 2025-11-21
+Fixed
+- Updated CI workflow to use MongoDB port `27018` to match test configuration.
+
 ### [2.2.1] - 2025-11-21
 Changed
 - Pinned MongoDB version to `6.0` in `docker-compose.yml` for stability.
