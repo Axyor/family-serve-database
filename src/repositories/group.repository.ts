@@ -16,7 +16,7 @@ export class GroupRepository extends BaseRepository<GroupDocument, IGroup> {
         const query = this.model.findOne({ name });
         const collation = getNameSearchCollation();
         if (collation) {
-            query.collation(collation as any);
+            query.collation(collation);
         }
         const doc = await query;
         return this.toInterface(doc);
@@ -41,21 +41,22 @@ export class GroupRepository extends BaseRepository<GroupDocument, IGroup> {
             'cookingSkill', 'mealFrequency', 'fastingWindow'
         ];
 
-        const setOps: Record<string, any> = {};
+        const setOps: Record<string, unknown> = {};
         for (const key of whitelist) {
-            const value = (update as any)[key];
+            const value = update[key];
             if (value === undefined) continue;
             if (key === 'dietaryProfile' && value) {
-                // Replace subfields atomically
-                if (value.preferences) {
-                    if (value.preferences.likes)
-                        setOps['members.$.dietaryProfile.preferences.likes'] = value.preferences.likes;
-                    if (value.preferences.dislikes)
-                        setOps['members.$.dietaryProfile.preferences.dislikes'] = value.preferences.dislikes;
+                const profile = value as IMemberProfile['dietaryProfile'];
+
+                if (profile.preferences) {
+                    if (profile.preferences.likes)
+                        setOps['members.$.dietaryProfile.preferences.likes'] = profile.preferences.likes;
+                    if (profile.preferences.dislikes)
+                        setOps['members.$.dietaryProfile.preferences.dislikes'] = profile.preferences.dislikes;
                 }
-                if (value.allergies) setOps['members.$.dietaryProfile.allergies'] = value.allergies;
-                if (value.restrictions) setOps['members.$.dietaryProfile.restrictions'] = value.restrictions;
-                if (value.healthNotes !== undefined) setOps['members.$.dietaryProfile.healthNotes'] = value.healthNotes;
+                if (profile.allergies) setOps['members.$.dietaryProfile.allergies'] = profile.allergies;
+                if (profile.restrictions) setOps['members.$.dietaryProfile.restrictions'] = profile.restrictions;
+                if (profile.healthNotes !== undefined) setOps['members.$.dietaryProfile.healthNotes'] = profile.healthNotes;
                 continue;
             }
             setOps[`members.$.${key}`] = value;

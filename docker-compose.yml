@@ -1,8 +1,8 @@
 services:
   mongodb:
-    image: mongo:latest
+    image: mongo:6.0
     ports:
-      - "27017:27017"
+      - "27018:27017"
     environment:
       # Database name and root credentials are now provided via .env file to avoid committing secrets.
       # Create a .env file (see .env.example) with:

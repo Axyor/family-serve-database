@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { transformWithId } from '../utils/transform.js';
+import { transformWithId, MongoObject } from '../utils/transform.js';
 import { getNameSearchCollation } from '../config/index.js';
 import {
     EDietaryRestriction,
@@ -99,8 +99,8 @@ const memberProfileSchema = new Schema({
                 type: Schema.Types.Mixed,
                 required: true,
                 validate: {
-                    validator: function (v: any) {
-                        return typeof v === 'string' || Object.values(EDietaryRestriction).includes(v);
+                    validator: function (v: unknown) {
+                        return typeof v === 'string' || Object.values(EDietaryRestriction).includes(v as EDietaryRestriction);
                     },
                     message: 'reason must be either a string or a valid EDietaryRestriction value'
                 }
@@ -122,7 +122,7 @@ const memberProfileSchema = new Schema({
     fastingWindow: { type: String, trim: true }
 }, {
     toJSON: {
-        transform: (_: any, ret: any) => {
+        transform: (_: unknown, ret: Record<string, unknown>) => {
             if (ret._id) {
                 const { _id, ...rest } = ret;
                 ret = {
@@ -135,7 +135,7 @@ const memberProfileSchema = new Schema({
         }
     },
     toObject: {
-        transform: (_: any, ret: any) => {
+        transform: (_: unknown, ret: Record<string, unknown>) => {
             if (ret._id) {
                 const { _id, ...rest } = ret;
                 ret = {
@@ -163,11 +163,11 @@ const groupSchema = new Schema({
     members: [memberProfileSchema]
 }, {
     timestamps: true,
-    toJSON: { transform: (_: any, ret: any) => transformWithId(ret) },
-    toObject: { transform: (_: any, ret: any) => transformWithId(ret) }
+    toJSON: { transform: (_: unknown, ret: unknown) => transformWithId(ret as MongoObject) },
+    toObject: { transform: (_: unknown, ret: unknown) => transformWithId(ret as MongoObject) }
 });
 
-groupSchema.virtual('numberOfPeople').get(function (this: any) {
+groupSchema.virtual('numberOfPeople').get(function (this: { members?: unknown[] }) {
     return this.members ? this.members.length : 0;
 });
 

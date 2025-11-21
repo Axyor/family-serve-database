@@ -1,4 +1,13 @@
-export function transformWithId(ret: any): any {
+export interface MongoObject {
+  _id?: { toString(): string };
+  __v?: unknown;
+  id?: string;
+  members?: MongoObject[];
+  numberOfPeople?: number;
+  [key: string]: unknown;
+}
+
+export function transformWithId(ret: MongoObject): MongoObject {
   if (ret && ret._id) {
     const id = ret._id.toString();
     const rest = { ...ret };
@@ -7,7 +16,7 @@ export function transformWithId(ret: any): any {
     ret = { ...rest, id };
   }
   if (ret && ret.members && Array.isArray(ret.members)) {
-    ret.members = ret.members.map((member: any) => {
+    ret.members = ret.members.map((member: MongoObject) => {
       if (!member || typeof member !== 'object' || !member._id) return member;
       const id = member._id.toString();
       const rest = { ...member };
@@ -23,7 +32,7 @@ export function transformWithId(ret: any): any {
   return ret;
 }
 
-export function memberTransform(ret: any): any {
+export function memberTransform(ret: MongoObject): MongoObject {
   if (ret && ret._id) {
     const id = ret._id.toString();
     const rest = { ...ret };

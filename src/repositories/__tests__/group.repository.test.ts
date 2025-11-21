@@ -8,7 +8,7 @@ describe('GroupRepository', () => {
 
     beforeAll(async () => {
         const dbName = `family-serve-test-repo-${process.env.JEST_WORKER_ID || '0'}`;
-        await mongoose.connect(`mongodb://test_user:test_password@localhost:27017/${dbName}?authSource=admin`);
+        await mongoose.connect(`mongodb://test_user:test_password@localhost:27018/${dbName}?authSource=admin`);
         repository = new GroupRepository();
     });
 

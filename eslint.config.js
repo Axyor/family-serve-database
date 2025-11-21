@@ -13,8 +13,7 @@ export default [
     },
     plugins: { '@typescript-eslint': pluginTs },
     rules: {
-      ...pluginTs.configs.recommended.rules,
-      '@typescript-eslint/no-explicit-any': 'off'
+      ...pluginTs.configs.recommended.rules
     }
   },
   {

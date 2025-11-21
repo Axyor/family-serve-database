@@ -1,6 +1,6 @@
 import { GroupRepository } from '../repositories/group.repository.js';
 import { IGroup, IMemberProfile, IDietaryRestriction } from '../interfaces/types.js';
-import { EHealthGoal, EGroupRole } from '../interfaces/enums.js';
+import { EHealthGoal } from '../interfaces/enums.js';
 import { GroupCreateSchema, MemberProfileCreateSchema } from '../interfaces/validation.js';
 import { logger } from '../utils/logger.js';
 import { GroupEntity } from '../domain/group.entity.js';
@@ -32,9 +32,8 @@ export class GroupService {
     async addMember(groupId: string, member: Omit<IMemberProfile, 'id'>): Promise<IGroup | null> {
         const parsedRaw = MemberProfileCreateSchema.parse(member);
         const parsed: Omit<IMemberProfile, 'id'> = {
-            role: parsedRaw.role ?? EGroupRole.MEMBER,
             ...parsedRaw
-        } as any;
+        } as unknown as Omit<IMemberProfile, 'id'>;
         logger.debug({ groupId, member: parsed.firstName }, 'Adding member');
         return this.repository.addMember(groupId, parsed);
     }
@@ -121,9 +120,9 @@ export class GroupService {
         filteredCount: number;
         members: IMemberProfile[];
     } | null> {
-    const group = await this.repository.findById(groupId);
-    if (!group) return null;
-    const entity = new GroupEntity(group);
-    return entity.summaryByRestriction(restrictionType, reason);
+        const group = await this.repository.findById(groupId);
+        if (!group) return null;
+        const entity = new GroupEntity(group);
+        return entity.summaryByRestriction(restrictionType, reason);
     }
 }
