@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. Adheres (lightly) to [Keep a Changelog](https://keepachangelog.com) and [SemVer](https://semver.org).
 
+### [2.2.1] - 2025-11-21
+Changed
+- Pinned MongoDB version to `6.0` in `docker-compose.yml` for stability.
+- Enabled strict type checking in `eslint.config.js` (removed `no-explicit-any: off`).
+- Refactored repositories and models to remove `any` types and improve type safety.
+
+Fixed
+- Fixed duplicate key assignment in `GroupService.addMember`.
+- Fixed `docker-compose.yml` port conflict (moved to `27018`).
+
 ### [2.2.0] - 2025-11-09
 Changed
 - Updated dependencies to latest versions for security and compatibility.
