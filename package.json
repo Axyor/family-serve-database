@@ -25,7 +25,7 @@
         "test:dual-consume": "npm run build && node test-cjs.cjs && node test-esm.mjs",
         "docker:up": "docker-compose up -d",
         "docker:down": "docker-compose down -v",
-        "docker:test": "npm run docker:up && sleep 2 && npm test && npm run docker:down",
+        "docker:test": "docker-compose up -d --wait && npm test && npm run docker:down",
         "docker:show-data": "chmod +x ./docker/show-data.sh && ./docker/show-data.sh",
         "docker:restart": "npm run docker:down && npm run docker:up",
         "lint": "eslint 'src/**/*.ts'",
