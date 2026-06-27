@@ -30,7 +30,7 @@ export class GroupRepository extends BaseRepository<GroupDocument, IGroup> {
                 $push: { members: member },
                 $set: { updatedAt: new Date() }
             },
-            { new: true }
+            { returnDocument: 'after' }
         );
         return this.toInterface(doc);
     }
@@ -69,7 +69,7 @@ export class GroupRepository extends BaseRepository<GroupDocument, IGroup> {
         const doc = await this.model.findOneAndUpdate(
             { _id: groupId, 'members._id': memberId },
             { $set: setOps },
-            { new: true }
+            { returnDocument: 'after' }
         );
         return this.toInterface(doc);
     }
@@ -81,7 +81,7 @@ export class GroupRepository extends BaseRepository<GroupDocument, IGroup> {
                 $pull: { members: { _id: memberId } },
                 $set: { updatedAt: new Date() }
             },
-            { new: true }
+            { returnDocument: 'after' }
         );
         return this.toInterface(doc);
     }
@@ -102,7 +102,7 @@ export class GroupRepository extends BaseRepository<GroupDocument, IGroup> {
                     updatedAt: new Date()
                 }
             },
-            { new: true }
+            { returnDocument: 'after' }
         );
         return this.toInterface(doc);
     }
@@ -121,7 +121,7 @@ export class GroupRepository extends BaseRepository<GroupDocument, IGroup> {
                 $push: { 'members.$.dietaryProfile.restrictions': restriction },
                 $set: { updatedAt: new Date() }
             },
-            { new: true }
+            { returnDocument: 'after' }
         );
         return this.toInterface(doc);
     }
@@ -140,7 +140,7 @@ export class GroupRepository extends BaseRepository<GroupDocument, IGroup> {
                 $pull: { 'members.$.dietaryProfile.restrictions': { _id: restrictionId } },
                 $set: { updatedAt: new Date() }
             },
-            { new: true }
+            { returnDocument: 'after' }
         );
         return this.toInterface(doc);
     }
@@ -161,7 +161,7 @@ export class GroupRepository extends BaseRepository<GroupDocument, IGroup> {
                     updatedAt: new Date()
                 }
             },
-            { new: true }
+            { returnDocument: 'after' }
         );
         return this.toInterface(doc);
     }
@@ -180,7 +180,7 @@ export class GroupRepository extends BaseRepository<GroupDocument, IGroup> {
                 $push: { 'members.$.dietaryProfile.allergies': allergy },
                 $set: { updatedAt: new Date() }
             },
-            { new: true }
+            { returnDocument: 'after' }
         );
         return this.toInterface(doc);
     }
@@ -199,7 +199,7 @@ export class GroupRepository extends BaseRepository<GroupDocument, IGroup> {
                 $pull: { 'members.$.dietaryProfile.allergies': allergy },
                 $set: { updatedAt: new Date() }
             },
-            { new: true }
+            { returnDocument: 'after' }
         );
         return this.toInterface(doc);
     }

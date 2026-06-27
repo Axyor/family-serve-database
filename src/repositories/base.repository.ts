@@ -23,7 +23,7 @@ export abstract class BaseRepository<TDocument extends Document, TInterface> {
     }
 
     async update(id: string, data: Partial<TInterface>): Promise<TInterface | null> {
-        const doc = await this.model.findByIdAndUpdate(id, data as unknown as UpdateQuery<TDocument>, { new: true });
+        const doc = await this.model.findByIdAndUpdate(id, data as unknown as UpdateQuery<TDocument>, { returnDocument: 'after' });
         return this.toInterface(doc as unknown as TDocument);
     }
 
