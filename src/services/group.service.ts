@@ -1,5 +1,5 @@
 import { GroupRepository } from '../repositories/group.repository.js';
-import { IGroup, IMemberProfile, IDietaryRestriction } from '../interfaces/types.js';
+import { IGroup, IMemberProfile, IDietaryRestriction, IGroupSummary } from '../interfaces/types.js';
 import { EHealthGoal } from '../interfaces/enums.js';
 import { GroupCreateSchema, MemberProfileCreateSchema } from '../interfaces/validation.js';
 import { logger } from '../utils/logger.js';
@@ -129,5 +129,9 @@ export class GroupService {
         if (!group) return null;
         const entity = new GroupEntity(group);
         return entity.summaryByRestriction(restrictionType, reason);
+    }
+
+    async listGroupsSummary(): Promise<IGroupSummary[]> {
+        return this.repository.findAllSummary();
     }
 }

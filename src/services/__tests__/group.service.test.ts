@@ -62,4 +62,26 @@ describe('GroupService', () => {
   const refreshed = await service.getGroup(group.id!);
   expect(refreshed?.numberOfPeople).toBe(1);
   });
+
+  it('should return lightweight group summaries', async () => {
+    await service.createGroup('Alpha');
+    const beta = await service.createGroup('Beta');
+    await service.addMember(beta.id!, {
+      role: EGroupRole.MEMBER,
+      firstName: 'Jane',
+      lastName: 'Doe',
+      age: 28,
+      gender: EGender.FEMALE,
+      dietaryProfile: { preferences: { likes: [], dislikes: [] }, allergies: [], restrictions: [] }
+    });
+
+    const summaries = await service.listGroupsSummary();
+    expect(summaries).toHaveLength(2);
+
+    const betaSummary = summaries.find(s => s.name === 'Beta')!;
+    expect(betaSummary.id).toBeDefined();
+    expect(betaSummary.memberCount).toBe(1);
+    expect(betaSummary.updatedAt).toBeDefined();
+    expect((betaSummary as any).members).toBeUndefined();
+  });
 });

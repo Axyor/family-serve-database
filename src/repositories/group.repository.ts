@@ -1,6 +1,7 @@
+import mongoose from 'mongoose';
 import { Group, GroupDocument } from '../models/group.model.js';
 import { BaseRepository } from './base.repository.js';
-import { IMemberProfile, IDietaryRestriction, IGroup } from '../interfaces/types.js';
+import { IMemberProfile, IDietaryRestriction, IGroup, IGroupSummary } from '../interfaces/types.js';
 import { getNameSearchCollation } from '../config/index.js';
 export class GroupRepository extends BaseRepository<GroupDocument, IGroup> {
     constructor() {
@@ -201,5 +202,24 @@ export class GroupRepository extends BaseRepository<GroupDocument, IGroup> {
             { new: true }
         );
         return this.toInterface(doc);
+    }
+
+    async findAllSummary(): Promise<IGroupSummary[]> {
+        const docs = await this.model
+            .find({}, { name: 1, updatedAt: 1, createdAt: 1, 'members._id': 1 })
+            .lean<Array<{
+                _id: mongoose.Types.ObjectId;
+                name: string;
+                members: Array<unknown>;
+                updatedAt: Date;
+                createdAt: Date;
+            }>>();
+        return docs.map(doc => ({
+            id: doc._id.toString(),
+            name: doc.name,
+            memberCount: Array.isArray(doc.members) ? doc.members.length : 0,
+            updatedAt: doc.updatedAt,
+            createdAt: doc.createdAt
+        }));
     }
 }

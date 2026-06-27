@@ -50,3 +50,11 @@ export interface IGroup {
   updatedAt: Date;
   readonly createdAt: Date;
 }
+
+export interface IGroupSummary {
+  id: string;
+  name: string;
+  memberCount: number;
+  updatedAt: Date;
+  createdAt: Date;
+}
