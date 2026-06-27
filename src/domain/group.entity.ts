@@ -8,7 +8,7 @@ export class GroupEntity {
   get name() { return this.data.name; }
   get members(): MemberEntity[] { return this.data.members.map(m => new MemberEntity(m)); }
   get raw(): IGroup { return this.data; }
-  get numberOfPeople(): number { return this.data.numberOfPeople ?? this.data.members.length; }
+  get numberOfPeople(): number { return this.data.numberOfPeople; }
 
   filterMembersByRestriction(type: IDietaryRestriction['type'], reason?: IDietaryRestriction['reason']): MemberEntity[] {
     return this.members.filter(m => m.hasRestriction(type, reason));
