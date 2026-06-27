@@ -31,15 +31,3 @@ export function transformWithId(ret: MongoObject): MongoObject {
   }
   return ret;
 }
-
-export function memberTransform(ret: MongoObject): MongoObject {
-  if (ret && ret._id) {
-    const id = ret._id.toString();
-    const rest = { ...ret };
-    delete rest._id;
-    delete rest.__v;
-    ret = { ...rest, id };
-  }
-  if (ret) delete ret.__v;
-  return ret;
-}

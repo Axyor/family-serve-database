@@ -167,10 +167,6 @@ const groupSchema = new Schema({
     toObject: { transform: (_: unknown, ret: unknown) => transformWithId(ret as MongoObject) }
 });
 
-groupSchema.virtual('numberOfPeople').get(function (this: { members?: unknown[] }) {
-    return this.members ? this.members.length : 0;
-});
-
 const __nameIndexCollation = getNameSearchCollation();
 groupSchema.index(
     { name: 1 },

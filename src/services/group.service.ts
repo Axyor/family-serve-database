@@ -1,5 +1,5 @@
 import { GroupRepository } from '../repositories/group.repository.js';
-import { IGroup, IMemberProfile, IDietaryRestriction } from '../interfaces/types.js';
+import { IGroup, IMemberProfile, IDietaryRestriction, IGroupSummary } from '../interfaces/types.js';
 import { EHealthGoal } from '../interfaces/enums.js';
 import { GroupCreateSchema, MemberProfileCreateSchema } from '../interfaces/validation.js';
 import { logger } from '../utils/logger.js';
@@ -95,18 +95,23 @@ export class GroupService {
         memberId: string,
         allergies: string[]
     ): Promise<IGroup | null> {
-        const group = await this.getGroup(groupId);
-        if (!group) return null;
+        return this.repository.updateMemberAllergies(groupId, memberId, allergies);
+    }
 
-        const member = group.members.find(m => m.id === memberId);
-        if (!member) return null;
+    async addMemberAllergy(
+        groupId: string,
+        memberId: string,
+        allergy: string
+    ): Promise<IGroup | null> {
+        return this.repository.addMemberAllergy(groupId, memberId, allergy);
+    }
 
-        return this.repository.updateMember(groupId, memberId, {
-            dietaryProfile: {
-                ...member.dietaryProfile,
-                allergies
-            }
-        });
+    async removeMemberAllergy(
+        groupId: string,
+        memberId: string,
+        allergy: string
+    ): Promise<IGroup | null> {
+        return this.repository.removeMemberAllergy(groupId, memberId, allergy);
     }
 
     async findMembersByRestriction(
@@ -124,5 +129,9 @@ export class GroupService {
         if (!group) return null;
         const entity = new GroupEntity(group);
         return entity.summaryByRestriction(restrictionType, reason);
+    }
+
+    async listGroupsSummary(): Promise<IGroupSummary[]> {
+        return this.repository.findAllSummary();
     }
 }

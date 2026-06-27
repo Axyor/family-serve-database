@@ -38,4 +38,36 @@ describe('GroupService Errors & Validation', () => {
     });
     expect(added?.members.length).toBe(1);
   });
+
+  it('should reject group name exceeding 100 chars', async () => {
+    await expect(service.createGroup('X'.repeat(101))).rejects.toThrow();
+  });
+
+  it('should reject firstName exceeding 100 chars', async () => {
+    const g = await service.createGroup('LimitsGroup');
+    await expect(service.addMember(g.id!, {
+      role: EGroupRole.MEMBER,
+      firstName: 'A'.repeat(101),
+      lastName: 'Doe',
+      age: 25,
+      gender: EGender.MALE,
+      dietaryProfile: { preferences: { likes: [], dislikes: [] }, allergies: [], restrictions: [] }
+    })).rejects.toThrow();
+  });
+
+  it('should reject allergies array exceeding 50 items', async () => {
+    const g = await service.createGroup('ArrayLimits');
+    await expect(service.addMember(g.id!, {
+      role: EGroupRole.MEMBER,
+      firstName: 'John',
+      lastName: 'Doe',
+      age: 25,
+      gender: EGender.MALE,
+      dietaryProfile: {
+        preferences: { likes: [], dislikes: [] },
+        allergies: Array.from({ length: 51 }, (_, i) => `Allergy${i}`),
+        restrictions: []
+      }
+    })).rejects.toThrow();
+  });
 });

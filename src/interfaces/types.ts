@@ -46,7 +46,15 @@ export interface IGroup {
   readonly id?: string;
   name: string;
   members: IMemberProfile[];
-  numberOfPeople?: number;
+  numberOfPeople: number;
   updatedAt: Date;
   readonly createdAt: Date;
+}
+
+export interface IGroupSummary {
+  id: string;
+  name: string;
+  memberCount: number;
+  updatedAt: Date;
+  createdAt: Date;
 }

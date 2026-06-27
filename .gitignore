@@ -37,3 +37,6 @@ Thumbs.db
 .github/chatmodes/
 .github/instructions/
 
+# AI assistant specs & planning (local only)
+docs/superpowers/
+
