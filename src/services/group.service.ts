@@ -95,18 +95,23 @@ export class GroupService {
         memberId: string,
         allergies: string[]
     ): Promise<IGroup | null> {
-        const group = await this.getGroup(groupId);
-        if (!group) return null;
+        return this.repository.updateMemberAllergies(groupId, memberId, allergies);
+    }
 
-        const member = group.members.find(m => m.id === memberId);
-        if (!member) return null;
+    async addMemberAllergy(
+        groupId: string,
+        memberId: string,
+        allergy: string
+    ): Promise<IGroup | null> {
+        return this.repository.addMemberAllergy(groupId, memberId, allergy);
+    }
 
-        return this.repository.updateMember(groupId, memberId, {
-            dietaryProfile: {
-                ...member.dietaryProfile,
-                allergies
-            }
-        });
+    async removeMemberAllergy(
+        groupId: string,
+        memberId: string,
+        allergy: string
+    ): Promise<IGroup | null> {
+        return this.repository.removeMemberAllergy(groupId, memberId, allergy);
     }
 
     async findMembersByRestriction(
