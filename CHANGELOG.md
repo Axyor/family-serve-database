@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Adheres (lightly) to [Keep a Changelog](https://keepachangelog.com) and [SemVer](https://semver.org).
 
+### [2.4.0] - 2026-06-27
+Added
+- `IGroupSummary` type for lightweight group representation (`id`, `name`, `memberCount`, timestamps).
+- `listGroupsSummary()` on `GroupService` — returns all groups without full member payloads via a lean MongoDB projection (efficient listing).
+- `addMemberAllergy()` and `removeMemberAllergy()` exposed on `GroupService` (previously implemented at the repository level but unreachable through the service API).
+- `resetNameSearchCollation()` exported from config module for test isolation.
+- Zod `max()` constraints on all string and array fields (e.g. names ≤ 100 chars, allergies array ≤ 50 items). Invalid inputs that previously slipped through will now throw at validation.
+
+Changed
+- `IGroup.numberOfPeople` is now required (`number`, was `number?`). The value is computed by `transformWithId` from the members array length; the Mongoose virtual has been removed.
+- `getNameSearchCollation()` result is now memoised — env vars are read once at startup instead of on every call.
+- `updateMemberAllergies()` in `GroupService` delegates directly to the atomic repository method, eliminating a read + write round-trip.
+- Mongoose `{ new: true }` replaced with `{ returnDocument: 'after' }` across all `findOneAndUpdate` calls (Mongoose 9 alignment).
+
+Refactored
+- Removed `src/interfaces/index.ts` — was a full duplicate of the types scattered across the other interface files; not part of the public API surface.
+- Removed `memberTransform` from `utils/transform.ts` (internal helper, unused after the `transformWithId` consolidation).
+- Removed `Object.freeze()` calls on TypeScript enums (no-op at runtime when `isolatedModules` is off).
+
+Migration Notes
+1. If you construct `IGroup` objects directly (e.g. in tests or mocks) and relied on `numberOfPeople` being optional, provide it explicitly — `group.members.length` is the canonical value.
+2. Validation is now stricter on string lengths and array sizes. Review any fixtures or seed data that contains unusually long strings or large arrays.
+
+### [2.3.0] - 2026-01-18
+Changed
+- Upgraded all runtime dependencies to their latest major versions: Mongoose 9, Zod 4, Pino 9.
+- Updated dev tooling: TypeScript 5.7, Jest 29, ESLint 9.
+
+Migration Notes
+- Follow the [Mongoose 8 → 9 migration guide](https://mongoosejs.com/docs/migrating_to_9.html) if you extend the models directly.
+- Zod 4 introduces stricter schema inference; see the [Zod v4 changelog](https://zod.dev/changelog).
+
 ### [2.2.2] - 2025-11-21
 Fixed
 - Updated CI workflow to use MongoDB port `27018` to match test configuration.
@@ -81,5 +113,7 @@ Migration Notes
 
 ---
 
+[2.4.0]: https://github.com/Axyor/family-serve-database/compare/v2.3.0...v2.4.0
+[2.3.0]: https://github.com/Axyor/family-serve-database/compare/v2.2.2...v2.3.0
 [2.0.0]: https://github.com/Axyor/family-serve-database/compare/v1.0.2...v2.0.0
 [2.1.0]: https://github.com/Axyor/family-serve-database/compare/v2.0.2...v2.1.0
